@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Brawl Daily</title>
+<meta name="description" content="Ein-Tipp-Verknüpfung zum täglichen Gratis-Geschenk im offiziellen Supercell Store.">
+<meta name="theme-color" content="#120a33">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Brawl Daily">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lilita+One&display=swap">
+<style>
+  :root{
+    --night:#120a33;
+    --night-2:#2b1b6e;
+    --night-3:#3a208a;
+    --gold:#ffc61a;
+    --gold-deep:#ff8a00;
+    --gold-shade:#b35d00;
+    --cyan:#2ee6f6;
+    --cream:#fff6e3;
+    --outline:#0c0626;
+    --display:"Lilita One", "Arial Black", "Segoe UI Black", Impact, system-ui, sans-serif;
+    --text:system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+
+  html,body{height:100%}
+
+  body{
+    font-family:var(--text);
+    color:var(--cream);
+    background:var(--night);
+    overflow:hidden;
+    overscroll-behavior:none;
+    user-select:none;
+  }
+
+  /* ---------- Bühne ---------- */
+  .stage{
+    position:relative;
+    min-height:100svh;
+    min-height:100dvh;
+    display:grid;
+    grid-template-rows:auto 1fr auto;
+    gap:16px;
+    padding:calc(18px + env(safe-area-inset-top)) 22px calc(20px + env(safe-area-inset-bottom));
+    max-width:460px;
+    margin:0 auto;
+    isolation:isolate;
+  }
+
+  .sky{
+    position:fixed;
+    inset:0;
+    z-index:-1;
+    background:
+      radial-gradient(120% 70% at 50% 18%, var(--night-3) 0%, var(--night-2) 38%, var(--night) 78%),
+      var(--night);
+  }
+  .sky::after{
+    /* feine Textur, damit der Verlauf nicht bandet */
+    content:"";
+    position:absolute;
+    inset:0;
+    opacity:.16;
+    background-image:radial-gradient(rgba(255,255,255,.35) .5px, transparent .5px);
+    background-size:3px 3px;
+  }
+
+  .dust{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+  .dust i{
+    position:absolute;
+    width:6px;height:6px;
+    background:var(--gold);
+    clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);
+    opacity:.5;
+    animation:drift 14s linear infinite;
+  }
+  @keyframes drift{
+    0%{transform:translateY(12vh) rotate(0deg);opacity:0}
+    12%{opacity:.55}
+    88%{opacity:.5}
+    100%{transform:translateY(-102vh) rotate(180deg);opacity:0}
+  }
+
+  /* ---------- Statuszeile ---------- */
+  .status{
+    justify-self:center;
+    display:inline-flex;
+    align-items:center;
+    gap:9px;
+    padding:9px 16px;
+    border-radius:999px;
+    background:rgba(255,255,255,.07);
+    border:1px solid rgba(255,255,255,.14);
+    backdrop-filter:blur(6px);
+    font-size:14px;
+    font-weight:600;
+    letter-spacing:.2px;
+    color:#e8dcff;
+  }
+  .dot{width:9px;height:9px;border-radius:50%;background:var(--cyan);box-shadow:0 0 10px var(--cyan)}
+  .status.done .dot{background:#7bdc8a;box-shadow:0 0 10px #7bdc8a}
+
+  /* ---------- Mitte ---------- */
+  .hero{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    gap:6px;
+  }
+
+  .badge{
+    width:min(50vw,196px);
+    aspect-ratio:1;
+    display:grid;
+    place-items:center;
+    margin-bottom:10px;
+    animation:hover 4.5s ease-in-out infinite;
+  }
+  .badge svg{width:100%;height:100%;filter:drop-shadow(0 12px 22px rgba(255,150,0,.35))}
+  @keyframes hover{
+    0%,100%{transform:translateY(0)}
+    50%{transform:translateY(-9px)}
+  }
+
+  h1{
+    font-family:var(--display);
+    font-size:clamp(40px,13vw,58px);
+    line-height:.92;
+    letter-spacing:.5px;
+    color:var(--cream);
+    text-shadow:0 4px 0 var(--outline), 0 12px 30px rgba(0,0,0,.45);
+  }
+  h1 span{display:block;color:var(--gold)}
+
+  .lead{
+    margin-top:14px;
+    font-size:16px;
+    line-height:1.5;
+    color:#cdc0f0;
+    max-width:27ch;
+  }
+
+  .reset{
+    margin-top:8px;
+    font-size:13px;
+    color:#9b8dc4;
+    min-height:18px;
+  }
+
+  /* ---------- Aktion ---------- */
+  .action{display:flex;flex-direction:column;align-items:center;gap:14px}
+
+  .go{
+    position:relative;
+    width:100%;
+    min-height:76px;
+    border:3px solid var(--outline);
+    border-radius:22px;
+    background:linear-gradient(180deg,#ffd75a 0%, var(--gold) 42%, var(--gold-deep) 100%);
+    color:#3d1c00;
+    font-family:var(--display);
+    font-size:clamp(19px,5.3vw,26px);
+    letter-spacing:.4px;
+    white-space:nowrap;
+    cursor:pointer;
+    box-shadow:0 8px 0 var(--gold-shade), 0 16px 26px rgba(0,0,0,.42);
+    transition:transform .12s cubic-bezier(.34,1.56,.64,1), box-shadow .12s ease;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    overflow:hidden;
+  }
+  .go::before{
+    /* Glanz, der einmal alle paar Sekunden über den Button läuft */
+    content:"";
+    position:absolute;
+    top:0;left:-60%;
+    width:45%;height:100%;
+    background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);
+    transform:skewX(-18deg);
+    animation:sheen 5.5s ease-in-out infinite;
+  }
+  @keyframes sheen{
+    0%,72%{left:-60%}
+    88%,100%{left:120%}
+  }
+  .go:hover{transform:translateY(-2px);box-shadow:0 10px 0 var(--gold-shade), 0 20px 30px rgba(0,0,0,.45)}
+  .go:active{transform:translateY(6px);box-shadow:0 2px 0 var(--gold-shade), 0 6px 14px rgba(0,0,0,.4)}
+  .go:focus-visible{outline:3px solid var(--cyan);outline-offset:4px}
+  .go .gift{font-size:1.05em;filter:drop-shadow(0 2px 0 rgba(0,0,0,.25))}
+
+  .fineprint{
+    font-size:12px;
+    line-height:1.5;
+    text-align:center;
+    color:#8579b0;
+    max-width:34ch;
+  }
+  .fineprint a{color:#a99adb}
+
+  /* ---------- Übergang ---------- */
+  .curtain{
+    position:fixed;
+    inset:0;
+    z-index:10;
+    display:grid;
+    place-items:center;
+    gap:14px;
+    background:radial-gradient(70% 55% at 50% 45%, var(--night-3), var(--night) 70%);
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .18s ease;
+  }
+  .curtain.on{opacity:1;pointer-events:auto}
+  .curtain-inner{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
+  .curtain .pop{
+    font-size:66px;
+    animation:pop .55s cubic-bezier(.34,1.56,.64,1) both;
+  }
+  @keyframes pop{
+    0%{transform:scale(.2) rotate(-18deg);opacity:0}
+    70%{transform:scale(1.14) rotate(6deg);opacity:1}
+    100%{transform:scale(1) rotate(0)}
+  }
+  .curtain b{
+    font-family:var(--display);
+    font-size:34px;
+    letter-spacing:1px;
+    color:var(--gold);
+    text-shadow:0 3px 0 var(--outline);
+  }
+  .curtain small{font-size:14px;color:#bcaee6}
+
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none !important;transition-duration:.01ms !important}
+  }
+
+  @media (min-height:760px){
+    .lead{font-size:17px}
+    .go{min-height:82px}
+  }
+</style>
+</head>
+<body>
+
+<div class="sky"></div>
+<div class="dust" id="dust" aria-hidden="true"></div>
+
+<main class="stage">
+
+  <div class="status" id="status">
+    <span class="dot"></span>
+    <span id="statusText">Bereit für heute</span>
+  </div>
+
+  <section class="hero">
+    <div class="badge" aria-hidden="true">
+      <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#ffd75a"/>
+            <stop offset="1" stop-color="#ff8a00"/>
+          </linearGradient>
+        </defs>
+        <circle cx="60" cy="60" r="52" fill="rgba(255,198,26,.10)"/>
+        <circle cx="60" cy="60" r="40" fill="rgba(255,198,26,.14)"/>
+        <path d="M60 14 L73 46 L108 46 L79 66 L90 99 L60 79 L30 99 L41 66 L12 46 L47 46 Z"
+              fill="url(#g)" stroke="#0c0626" stroke-width="4.5" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <h1>BRAWL<span>DAILY</span></h1>
+    <p class="lead">Ein Tipp &ndash; und du bist im Supercell&nbsp;Store bei deinem Gratis&shy;geschenk.</p>
+    <p class="reset" id="reset"></p>
+  </section>
+
+  <section class="action">
+    <button class="go" id="go" type="button">
+      <span class="gift">🎁</span><span>TAGESGESCHENK HOLEN</span>
+    </button>
+    <p class="fineprint">
+      Öffnet <strong>store.supercell.com</strong>. Anmeldung läuft dort mit deiner Supercell ID.<br>
+      Kein Produkt von Supercell — nur eine Verknüpfung.
+    </p>
+  </section>
+
+</main>
+
+<div class="curtain" id="curtain" aria-hidden="true">
+  <div class="curtain-inner">
+    <div class="pop">🎁</div>
+    <b>BRAWL TIME</b>
+    <small>Store wird geöffnet …</small>
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   Ziel-Adresse — hier ändern, falls Supercell umzieht.
+   Offizieller Supercell Store für Brawl Stars (tägliches
+   Gratis-Geschenk nach Login mit Supercell ID).
+   ========================================================= */
+const DAILY_REWARD_URL = "https://store.supercell.com/brawlstars";
+
+/* Wie lange die Übergangsanimation läuft (ms). */
+const TRANSITION_MS = 850;
+
+/* Speicherschlüssel für den zuletzt geöffneten Tag. */
+const STORAGE_KEY = "brawlDaily.lastOpened";
+
+/* ---------------------------------------------------------
+   Der Store setzt das Tagesgeschenk um 00:00 UTC zurück,
+   deshalb rechnen wir den "Tag" bewusst in UTC.
+   --------------------------------------------------------- */
+const utcDay = (d = new Date()) => d.toISOString().slice(0, 10);
+
+const store = {
+  read(){ try { return localStorage.getItem(STORAGE_KEY); } catch { return null; } },
+  write(v){ try { localStorage.setItem(STORAGE_KEY, v); } catch {} }
+};
+
+const statusEl = document.getElementById("status");
+const statusText = document.getElementById("statusText");
+const resetEl = document.getElementById("reset");
+const curtain = document.getElementById("curtain");
+const goBtn = document.getElementById("go");
+
+function timeToReset(){
+  const now = new Date();
+  const next = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1);
+  const mins = Math.max(0, Math.round((next - now.getTime()) / 60000));
+  const h = Math.floor(mins / 60), m = mins % 60;
+  return h > 0 ? `${h} Std. ${m} Min.` : `${m} Min.`;
+}
+
+function render(){
+  const openedToday = store.read() === utcDay();
+  statusEl.classList.toggle("done", openedToday);
+  statusText.textContent = openedToday ? "Heute schon geöffnet" : "Neuer Tag";
+  resetEl.textContent = openedToday
+    ? `Nächstes Geschenk in ${timeToReset()}`
+    : "";
+}
+
+function launch(){
+  if (goBtn.disabled) return;
+  goBtn.disabled = true;
+  store.write(utcDay());
+  curtain.classList.add("on");
+  if (navigator.vibrate) navigator.vibrate(18);
+  setTimeout(() => { window.location.href = DAILY_REWARD_URL; }, TRANSITION_MS);
+}
+
+goBtn.addEventListener("click", launch);
+
+/* Zurück aus dem Store: Ansicht wieder scharf schalten. */
+window.addEventListener("pageshow", () => {
+  goBtn.disabled = false;
+  curtain.classList.remove("on");
+  render();
+});
+
+/* Statuszeile aktuell halten, ohne Dauerlast. */
+setInterval(render, 60000);
+render();
+
+/* Ein paar treibende Sterne — bewusst wenige. */
+(function dust(){
+  const host = document.getElementById("dust");
+  const frag = document.createDocumentFragment();
+  for (let i = 0; i < 9; i++){
+    const s = document.createElement("i");
+    s.style.left = Math.random() * 100 + "%";
+    s.style.transform = "scale(" + (0.6 + Math.random() * 1.1) + ")";
+    s.style.animationDelay = (-Math.random() * 14) + "s";
+    s.style.animationDuration = (11 + Math.random() * 9) + "s";
+    frag.appendChild(s);
+  }
+  host.appendChild(frag);
+})();
+
+/* Service Worker: macht die App offline-fähig und installierbar. */
+if ("serviceWorker" in navigator){
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("sw.js").catch(() => {});
+  });
+}
+</script>
+</body>
+</html>
